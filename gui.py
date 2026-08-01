@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import Image, ImageTk
 import numpy as np
 import cv2
+from number_prediction_service import NumberPredictionService
 
 app = Tk()
 app.geometry("400x400")
@@ -34,11 +35,12 @@ image = Image.open("draw_digit.png")
 image = image.resize((400,400), Image.Resampling.LANCZOS)
 image = ImageTk.PhotoImage(image)
 canvas.create_image(0,0, image=image, anchor='nw')
+canvas.postscript(file="draw_digit.png", colormode='gray') # Save image
 
-predict = Button(app, text="Predict")
+predict = Button(app, text="Predict", command= lambda: NumberPredictionService.predict(image))
 predict.pack()
 
-cancel = Button(app, text="Cancel")
+cancel = Button(app, text="Cancel",command=quit)
 cancel.pack()
 
 
