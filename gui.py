@@ -1,5 +1,5 @@
 from tkinter import *
-from PIL import Image, ImageTk
+from PIL import Image,ImageTk
 import numpy as np
 import cv2
 from number_prediction_service import NumberPredictionService
@@ -31,13 +31,12 @@ canvas.bind("<Button-1>", get_x_and_y)
 canvas.bind("<B1-Motion>", draw_smth)
 
 
-image = Image.open("draw_digit.png")
-image = image.resize((400,400), Image.Resampling.LANCZOS)
-image = ImageTk.PhotoImage(image)
-canvas.create_image(0,0, image=image, anchor='nw')
-canvas.postscript(file="draw_digit.png", colormode='gray') # Save image
-
-predict = Button(app, text="Predict", command= lambda: NumberPredictionService.predict(image))
+image_origin = Image.open("draw_digit.png")
+image_origin = image_origin.resize((400,400), Image.Resampling.LANCZOS)
+image_tk = ImageTk.PhotoImage(image_origin)
+canvas.create_image(0,0, image=image_tk, anchor='nw')
+image_origin.save("draw_digit.png")
+predict = Button(app, text="Predict", command= lambda: NumberPredictionService.predict("draw_digit.png"))
 predict.pack()
 
 cancel = Button(app, text="Cancel",command=quit)
