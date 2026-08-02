@@ -1,8 +1,10 @@
 from tkinter import *
-from PIL import Image,ImageTk
+from tkinter import filedialog
+from PIL import Image,ImageTk,ImageGrab
 import numpy as np
 import cv2
 from number_prediction_service import NumberPredictionService
+import os
 
 app = Tk()
 app.geometry("400x400")
@@ -22,6 +24,26 @@ def draw_smth(event):
     global lasx, lasy
     canvas.create_line((lasx, lasy, event.x, event.y), fill='black', width=5)
     lasx, lasy = event.x, event.y
+
+def save_image():
+    # Choose a location to save the file
+    # fileLocation = filedialog.asksaveasfilename(defaultextension="jpg")
+    # Define the initial coordinates of the image to be saved
+    x = app.winfo_rootx()+100
+    y = app.winfo_rooty()+35
+    # Define the final coordinates of the image to be saved
+    img = ImageGrab.grab(bbox=(x,y,x+410,y+380))
+    
+    # Show the image saved
+    img.show()
+    # Save it
+    img.save("./draw_digit.png")
+
+def predict_digit():
+    save_image()
+    NumberPredictionService.predict("draw_digit.png")
+    if os.path.exists("draw_digit.png"):
+        os.remove("draw_digit.png")
     
 
 canvas = Canvas(app, bg='black')
@@ -35,8 +57,9 @@ image_origin = Image.open("draw_digit.png")
 image_origin = image_origin.resize((400,400), Image.Resampling.LANCZOS)
 image_tk = ImageTk.PhotoImage(image_origin)
 canvas.create_image(0,0, image=image_tk, anchor='nw')
-image_origin.save("draw_digit.png")
-predict = Button(app, text="Predict", command= lambda: NumberPredictionService.predict("draw_digit.png"))
+# image_origin.save("draw_digit.png")
+predict = Button(app, text="Predict", command= lambda: predict_digit())
+# NumberPredictionService.predict("draw_digit.png")
 predict.pack()
 
 cancel = Button(app, text="Cancel",command=quit)
