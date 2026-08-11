@@ -22,12 +22,12 @@ class NeuralNetwork:
         Flatten(input_shape=(28, 28)),  # Flatten the 28x28 image into a 1D array
         Dense(128, activation='relu'),  # First hidden layer
         Dense(64, activation='relu'),   # Second hidden layer
-        Dense(10, activation='softmax') # Output layer (10 classes for digits 0-9)
+        Dense(10, activation='linear') # Output layer (10 classes for digits 0-9)
         ])
 
         # Step 4: Compile the model
-        model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.compile(loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True), optimizer=tf.keras.optimizers.Adam(0.001), metrics=['accuracy'])
         # Step 5: Train the model
-        model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test))
+        model.fit(x_train, y_train, epochs=5)
 
         return model
